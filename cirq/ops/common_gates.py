@@ -181,6 +181,11 @@ class XPowGate(eigen_gate.EigenGate,
         return args.format('rx({0:half_turns}) {1};\n', self._exponent,
                            qubits[0])
 
+    def _quil_(self, args: 'cirq.QuilArgs',
+                qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+        # TODO
+        return ""
+
     @property
     def phase_exponent(self):
         return 0.0
@@ -319,6 +324,11 @@ class YPowGate(eigen_gate.EigenGate,
 
         return args.format('ry({0:half_turns}) {1};\n', self._exponent,
                            qubits[0])
+
+    def _quil_(self, args: 'cirq.QuilArgs',
+                qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+        # TODO
+        return ""
 
     @property
     def phase_exponent(self):
@@ -505,6 +515,11 @@ class ZPowGate(eigen_gate.EigenGate,
 
         return args.format('rz({0:half_turns}) {1};\n', self._exponent,
                            qubits[0])
+
+    def _quil_(self, args: 'cirq.QuilArgs',
+                qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+        # TODO
+        return ""
 
     def __str__(self) -> str:
         if self._global_shift == -0.5:
