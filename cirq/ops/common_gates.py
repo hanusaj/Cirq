@@ -183,8 +183,10 @@ class XPowGate(eigen_gate.EigenGate,
 
     def _quil_(self, args: 'cirq.QuilArgs',
                 qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
-        # TODO
-        return ""
+        if self._exponent == 1:
+            return args.format('X {0}\n', qubits[0])
+
+        return args.format('RX({0:half_turns}) {1}\n', self._exponent, qubits[0])
 
     @property
     def phase_exponent(self):
