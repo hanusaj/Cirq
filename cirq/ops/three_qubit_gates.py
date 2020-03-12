@@ -530,6 +530,9 @@ class CSwapGate(gate_features.ThreeQubitGate,
         return args.format('cswap {0},{1},{2};\n',
                            qubits[0], qubits[1], qubits[2])
 
+    def _quil_(self, qubits: Tuple['cirq.QID', ...]) -> Optional[str]:
+        return 'CSWAP {0} {1} {2}\n'.format(qubits[0], qubits[1], qubits[2])
+
     def _value_equality_values_(self):
         return ()
 
