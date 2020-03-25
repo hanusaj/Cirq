@@ -69,6 +69,7 @@ from cirq.circuits import (
     PointOptimizationSummary,
     PointOptimizer,
     QasmOutput,
+    QuilOutput,
     TextDiagramDrawer,
     Unique,
 )

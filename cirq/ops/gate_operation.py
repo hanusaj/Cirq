@@ -207,6 +207,11 @@ class GateOperation(raw_types.Operation):
                               args=args,
                               qubits=self.qubits,
                               default=None)
+    
+    def _quil_(self) -> Optional[str]:
+        return protocols.quil(self.gate,
+                              qubits=self.qubits,
+                              default=None)
 
     def _equal_up_to_global_phase_(self,
                                    other: Any,
