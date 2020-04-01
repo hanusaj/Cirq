@@ -381,6 +381,11 @@ class CCXPowGate(eigen_gate.EigenGate,
         return args.format('ccx {0},{1},{2};\n',
                            qubits[0], qubits[1], qubits[2])
 
+    def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+        if self._exponent != 1:
+            return None
+        return format('CCNOT {0},{1},{2};\n', qubits[0], qubits[1], qubits[2])
+
     def __repr__(self) -> str:
         if self._global_shift == 0:
             if self._exponent == 1:
@@ -529,6 +534,9 @@ class CSwapGate(gate_features.ThreeQubitGate,
         args.validate_version('2.0')
         return args.format('cswap {0},{1},{2};\n',
                            qubits[0], qubits[1], qubits[2])
+
+    def _quil_(self, qubits: Tuple['cirq.QID', ...]) -> Optional[str]:
+        return 'CSWAP {0} {1} {2}\n'.format(qubits[0], qubits[1], qubits[2])
 
     def _value_equality_values_(self):
         return ()
