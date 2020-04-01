@@ -30,7 +30,7 @@ class QuilOutput:
     def __str__(self):
         output = []
         self._write_quil(lambda s: output.append(s))
-        return ''.join(output)
+        return rename_defgates(''.join(output))
 
     def _write_quil(self, output_func: Callable[[str], None]) -> None:
         def keep(op: 'cirq.Operation') -> bool:
@@ -61,3 +61,30 @@ class QuilOutput:
 
             for decomposed_op in decomposed:
                 output_func(protocols.quil(decomposed_op))
+
+    def rename_defgates(output: str):
+        result = output
+        defString = "DEFGATE"
+        nameString = "USERGATE"
+        defIdx = 0
+        nameIdx = 0
+        gateNum = 0
+        i = 0
+        while i < len(output):
+            if result[i] == defString[defIdx]:
+                defIdx += 1
+            else:
+                defIdx = 0
+            if result[i] == nameString[nameIdx]:
+                nameIdx += 1
+            else:
+                nameIdx = 0
+            if defIdx == len(defString):
+                gateNum += 1
+                defIdx = 0
+            if nameIdx == len(nameString):
+                result = result[:i+1] + str(gateNum) + result[i+1:]
+                nameIdx = 0
+                i += 1
+            i += 1
+        return result
