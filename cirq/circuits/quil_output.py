@@ -21,6 +21,7 @@ class QuilOutput:
     def __init__(self,
                  operations: 'cirq.OP_TREE',
                  qubits: Tuple['cirq.Qid', ...]) -> None:
+        print(operations)
         self.operations = tuple(cirq.ops.flatten_to_ops(operations))
         self.qubits = qubits
     
