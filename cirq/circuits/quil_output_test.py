@@ -31,4 +31,5 @@ def test_write_operations():
 
 def test_two_qubit_diagonal_gate():
     q0,q1, = _make_qubits(2)
-    output = cirq.QuilOutput((cirq.TwoQubitDiagonalGate(q0,q1,)), (q0,q1,))
+    output = cirq.QuilOutput((cirq.TwoQubitDiagonalGate([0.34, 0.12, 0, 0.96]),), (q0,q1,))
+    print(str(output))
