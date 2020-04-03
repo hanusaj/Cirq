@@ -28,3 +28,7 @@ def test_write_operations():
     q0, = _make_qubits(1)
     output = cirq.QuilOutput((cirq.X(q0) ** 0.5,), (q0,))
     print (str(output))
+
+def test_two_qubit_diagonal_gate():
+    q0,q1, = _make_qubits(2)
+    output = cirq.QuilOutput((cirq.TwoQubitDiagonalGate(q0,q1,)), (q0,q1,))
