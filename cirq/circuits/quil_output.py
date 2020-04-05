@@ -50,7 +50,7 @@ class QuilTwoQubitGate(ops.TwoQubitGate):
         return self.matrix
 
     def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> str:
-        return "DEFGATE USERGATE:\n\t{0}, {1}, {2}, {3}\n\t{4}, {5}, {6}, {7}\n\t{8}, {9}, {10}, {11}\n\t{12}, {13}, {14}, {15}\nUSERGATE {16}\n".format(to_quil_complex_format(self.matrix[0,0]),
+        return "DEFGATE USERGATE:\n\t{0}, {1}, {2}, {3}\n\t{4}, {5}, {6}, {7}\n\t{8}, {9}, {10}, {11}\n\t{12}, {13}, {14}, {15}\nUSERGATE {16} {17}\n".format(to_quil_complex_format(self.matrix[0,0]),
                                                                                 to_quil_complex_format(self.matrix[0,1]),
                                                                                 to_quil_complex_format(self.matrix[0,2]),
                                                                                 to_quil_complex_format(self.matrix[0,3]),
@@ -66,7 +66,7 @@ class QuilTwoQubitGate(ops.TwoQubitGate):
                                                                                 to_quil_complex_format(self.matrix[3,1]),
                                                                                 to_quil_complex_format(self.matrix[3,2]),
                                                                                 to_quil_complex_format(self.matrix[3,3]),
-                                                                                qubits[0])
+                                                                                qubits[0], qubits[1])
 
     def __repr__(self) -> str:
         return 'cirq.circuits.quil_output.QuilTwoQubitGate({0})'.format(self.matrix)
