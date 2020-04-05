@@ -1015,7 +1015,7 @@ class CXPowGate(eigen_gate.EigenGate, gate_features.TwoQubitGate):
 
     def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
         if self._exponent == 1:
-            return 'CNOT {0}, {1}\n'.format(qubits[0], qubits[1])
+            return 'CNOT {0} {1}\n'.format(qubits[0], qubits[1])
         return None
 
     def __str__(self) -> str:
