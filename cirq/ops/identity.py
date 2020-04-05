@@ -166,7 +166,7 @@ class IdentityGate(raw_types.Gate):
         return ''.join([args.format('id {0};\n', qubit) for qubit in qubits])
     
     def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
-        return ''.join(format('I {0};\n', qubit) for qubit in qubits)
+        return ''.join('I {0};\n'.format(qubit) for qubit in qubits)
    
     @classmethod
     def _from_json_dict_(cls, num_qubits, qid_shape=None, **kwargs):
