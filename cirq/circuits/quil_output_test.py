@@ -36,11 +36,6 @@ def test_write_operations():
     output = cirq.QuilOutput((cirq.X(q0) ** 0.5,), (q0,))
     print (str(output))
 
-def test_two_qubit_diagonal_gate():
-    q0,q1, = _make_qubits(2)
-    output = cirq.QuilOutput((cirq.TwoQubitDiagonalGate([0.34, 0.12, 0, 0.96]),), (q0,q1,))
-    print(str(output))
-
 # def test_quil_one_qubit_gate_repr():
 #     gate = QuilOneQubitGate(np.array([[1,0],[0,1]]))
 #     assert repr(gate) == ("""cirq.circuits.quil_output.QuilOneQubitGate(matrix=
