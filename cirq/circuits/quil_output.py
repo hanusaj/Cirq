@@ -13,15 +13,13 @@
 # limitations under the License.
 
 import cirq
-from cirq import protocols
+from cirq import protocols, value, ops
 from typing import (Callable, Dict, Optional, Sequence, Set, Tuple, Union,
                     TYPE_CHECKING)
 import numpy as np
 
 def to_quil_complex_format(num):
         cnum = complex(str(num))
-        if cnum.imag == 0:
-            return num
         return "{0}+{1}i".format(cnum.real, cnum.imag)
 
 @value.value_equality(approximate=True)
@@ -31,7 +29,7 @@ class QuilOneQubitGate(ops.SingleQubitGate):
         self.matrix = matrix
 
     def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> str:
-        return "DEFGATE USERGATE:\n\t{0}, {1}\n\t{2}, {3}\nUSERGATE {4}".format(to_quil_complex_format(self.matrix[0,0]),
+        return "DEFGATE USERGATE:\n\t{0}, {1}\n\t{2}, {3}\nUSERGATE {4}\n".format(to_quil_complex_format(self.matrix[0,0]),
                                                                                 to_quil_complex_format(self.matrix[0,1]),
                                                                                 to_quil_complex_format(self.matrix[1,0]),
                                                                                 to_quil_complex_format(self.matrix[1,1]),
@@ -52,7 +50,7 @@ class QuilTwoQubitGate(ops.TwoQubitGate):
         return self.matrix
 
     def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> str:
-        return "DEFGATE USERGATE:\n\t{0}, {1}, {2}, {3}\n\t{4}, {5}, {6}, {7}\n\t{8}, {9}, {10}, {11}\n\t{12}, {13}, {14}, {15}\nUSERGATE {16}".format(to_quil_complex_format(self.matrix[0,0]),
+        return "DEFGATE USERGATE:\n\t{0}, {1}, {2}, {3}\n\t{4}, {5}, {6}, {7}\n\t{8}, {9}, {10}, {11}\n\t{12}, {13}, {14}, {15}\nUSERGATE {16}\n".format(to_quil_complex_format(self.matrix[0,0]),
                                                                                 to_quil_complex_format(self.matrix[0,1]),
                                                                                 to_quil_complex_format(self.matrix[0,2]),
                                                                                 to_quil_complex_format(self.matrix[0,3]),
@@ -87,7 +85,7 @@ class QuilOutput:
     def __str__(self):
         output = []
         self._write_quil(lambda s: output.append(s))
-        return rename_defgates(''.join(output))
+        return QuilOutput.rename_defgates(''.join(output))
 
     def _write_quil(self, output_func: Callable[[str], None]) -> None:
         def keep(op: 'cirq.Operation') -> bool:
