@@ -138,8 +138,8 @@ class SwapPowGate(eigen_gate.EigenGate, gate_features.TwoQubitGate,
     #angle?
     def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
         if self._exponent == 1:
-            return 'SWAP {0},{1};\n'.format(qubits[0], qubits[1])
-        return 'PSWAP {0},{1},{2};\n'.format(_eigen_components(self), qubits[0], qubits[1])
+            return 'SWAP {0} {1}\n'.format(qubits[0], qubits[1])
+        return 'PSWAP({0}) {1} {2}\n'.format(self._exponent, qubits[0], qubits[1])
 
 
     def __str__(self) -> str:
@@ -268,7 +268,7 @@ class ISwapPowGate(eigen_gate.EigenGate,
 
     def _quil_ (self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
         if self._exponent == 1:
-            return 'ISWAP {0},{1};\n'.format(qubits[0], qubits[1])
+            return 'ISWAP {0} {1}\n'.format(qubits[0], qubits[1])
         return None #ISwapPowGate is not implemented in QUIL
 
 
