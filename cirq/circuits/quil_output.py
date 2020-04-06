@@ -82,6 +82,14 @@ class QuilOutput:
     def _generate_qubit_ids(self) -> Dict['cirq.Qid', str]:
         return {qubit: str(i) for i, qubit in enumerate(self.qubits)}
     
+    def save_to_file(self, path: Union[str, bytes, int]) -> None:
+        """Write QUIL output to a file specified by path."""
+        with open(path, 'w') as f:
+            def write(s: str) -> None:
+                f.write(s)
+
+            self._write_quil(write)
+
     def __str__(self):
         output = []
         self._write_quil(lambda s: output.append(s))
