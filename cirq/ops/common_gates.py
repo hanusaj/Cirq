@@ -844,9 +844,9 @@ class CZPowGate(eigen_gate.EigenGate,
         return args.format('cz {0},{1};\n', qubits[0], qubits[1])
 
     def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
-        if self._exponent != 1:
-            return None
-        return 'CPHASE {0} {1} {2}\n'.format(self._exponent, qubits[0], qubits[1])
+        if self._exponent == 1:
+            return 'CZ {0} {1}\n'.format(qubits[0], qubits[1])
+        return 'CPHASE({0}) {1} {2}\n'.format(self._exponent, qubits[0], qubits[1])
 
     def __str__(self) -> str:
         if self._exponent == 1:

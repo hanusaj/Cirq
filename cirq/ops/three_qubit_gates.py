@@ -139,6 +139,16 @@ class CCZPowGate(eigen_gate.EigenGate,
             args.format('h {0};\n', qubits[2])]
         return ''.join(lines)
 
+    def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+        if self._exponent != 1:
+            return None
+        lines = [
+            'H {0}\n'.format(qubits[2]),
+            'CCNOT {0} {1} {2}\n'.format(qubits[0], qubits[1], qubits[2]),
+            'H {0}\n'.format(qubits[2])
+        ]
+        return ''.join(lines)
+
     def __repr__(self) -> str:
         if self._global_shift == 0:
             if self._exponent == 1:

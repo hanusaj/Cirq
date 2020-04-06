@@ -75,13 +75,27 @@ class QuilOutput:
     def __init__(self,
                  operations: 'cirq.OP_TREE',
                  qubits: Tuple['cirq.Qid', ...]) -> None:
-        print(operations)
         self.operations = tuple(cirq.ops.flatten_to_ops(operations))
+        self.measurements = tuple(op for op in self.operations
+                                  if isinstance(op.gate, ops.MeasurementGate))
+        self.measurement_id_map = self._generate_measurement_ids()
         self.qubits = qubits
     
     def _generate_qubit_ids(self) -> Dict['cirq.Qid', str]:
         return {qubit: str(i) for i, qubit in enumerate(self.qubits)}
     
+    def _generate_measurement_ids(self) -> Dict[str, str]:
+        index = 0
+        measurement_id_map = {}
+        for op in self.operations:
+            if isinstance(op.gate, ops.MeasurementGate):
+                key = protocols.measurement_key(op)
+                if key in measurement_id_map:
+                    continue
+                measurement_id_map[key] = 'm{}'.format(index)
+                index += 1
+        return measurement_id_map
+
     def save_to_file(self, path: Union[str, bytes, int]) -> None:
         """Write QUIL output to a file specified by path."""
         with open(path, 'w') as f:
@@ -96,6 +110,19 @@ class QuilOutput:
         return QuilOutput.rename_defgates(''.join(output))
 
     def _write_quil(self, output_func: Callable[[str], None]) -> None:
+        output_func('# Created using Cirq.\n\n')
+        meas_string = []
+        for m in self.measurements:
+            key = protocols.measurement_key(m)
+            if key in meas_string:
+                continue
+            meas_string.append(key)
+            output_func('DECLARE {} BIT[{}]\n'.format(self.measurement_id_map[key],
+                        len(m.qubits)))
+        output_func('\n')
+        qubits_string = ' '.join([str(q) for q in self.qubits])
+        output_func('DEFCIRCUIT QUIL_CIRCUIT {0} {1}:\n\t'.format(qubits_string, ' '.join(meas_string)))
+
         def keep(op: 'cirq.Operation') -> bool:
             return protocols.quil(op) is not None
 
@@ -115,6 +142,7 @@ class QuilOutput:
             return ValueError(
                 'Cannot output operation as QUIL: {!r}'.format(bad_op))
 
+        lines = []
         for main_op in self.operations:
             decomposed = protocols.decompose(
                 main_op,
@@ -123,7 +151,13 @@ class QuilOutput:
                 on_stuck_raise=on_stuck)
 
             for decomposed_op in decomposed:
-                output_func(protocols.quil(decomposed_op))
+                lines.append(str(protocols.quil(decomposed_op)).replace('\n', '\n\t'))
+        
+        output_func(''.join(lines)[:-1])
+        qubit_to_number = ' '.join([str(i) for i in range(len(self.qubits))])
+        measurement_to_number = ' '.join([self.measurement_id_map[m] for m in self.measurement_id_map])
+        output_func('QUIL_CIRCUIT {0} {1}\n'.format(qubit_to_number, measurement_to_number))
+            
 
     def rename_defgates(output: str):
         result = output

@@ -28,7 +28,11 @@ def test_single_gate_no_parameter():
     q0, = _make_qubits(1)
     output = cirq.QuilOutput((cirq.X(q0),), (q0,))
     assert (str(output) ==
-            """X q0\n""")
+            """# Created using Cirq.
+
+DEFCIRCUIT QUIL_CIRCUIT q0 :
+\tX q0
+QUIL_CIRCUIT 0""")
 
 def test_single_gate_with_parameter():
     q0, = _make_qubits(1)
@@ -46,9 +50,14 @@ def test_h_gate_with_parameter():
     q0, = _make_qubits(1)
     output = cirq.QuilOutput((cirq.H(q0) ** 0.25,), (q0,))
     assert (str(output) ==
-            """RY(0.25) q0
-RX(0.25) q0
-RY(-0.25) q0""")
+            """# Created using Cirq.
+
+
+DEFCIRCUIT QUIL_CIRCUIT q0 :
+\tRY(0.25) q0
+\tRX(0.25) q0
+\tRY(-0.25) q0
+QUIL_CIRCUIT 0 \n""")
 
 def test_save_to_file(tmpdir):
     file_path = os.path.join(tmpdir, 'test.quil')
@@ -58,7 +67,12 @@ def test_save_to_file(tmpdir):
     with open(file_path, 'r') as f:
         file_content = f.read()
     assert (file_content ==
-            """X q0\n""")
+            """# Created using Cirq.
+
+
+DEFCIRCUIT QUIL_CIRCUIT q0 :
+\tX q0
+QUIL_CIRCUIT 0 \n""")
 
 # def test_quil_one_qubit_gate_repr():
 #     gate = QuilOneQubitGate(np.array([[1,0],[0,1]]))
@@ -111,31 +125,93 @@ def test_all_operations():
     qubits = tuple(_make_qubits(5))
     operations = _all_operations(*qubits, include_measurements=False)
     output = cirq.QuilOutput(operations, qubits)
-    print( str(output) )
+    print(str(output))
+    assert(str(output) == """# Created using Cirq.
+
+DECLARE m0 BIT[1]
+DECLARE m1 BIT[1]
+DECLARE m2 BIT[1]
+DECLARE m3 BIT[3]
+
+DEFCIRCUIT QUIL_CIRCUIT q0 q1 q2 q3 q4 xX x_a X multi:
+\tZ q0
+\tRZ(0.625) q0
+\tY q0
+\tRY(0.375) q0
+\tX q0
+\tRX(0.875) q0
+\tH q1
+\tCZ q0 q1
+\tCPHASE(0.25) q0 q1
+\tCNOT q0 q1
+\tRY(-0.5) q1
+\tCPHASE(0.5) q0 q1
+\tRY(0.5) q1
+\tSWAP q0 q1
+\tPSWAP(0.75) q0 q1
+\tH q2
+\tCCNOT q0 q1 q2
+\tH q2
+\tCCNOT q0 q1 q2
+\tRZ(0.125) q0
+\tRZ(0.125) q1
+\tRZ(0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tRZ(-0.125) q1
+\tRZ(0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tRZ(-0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tRZ(-0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tH q2
+\tRZ(0.125) q0
+\tRZ(0.125) q1
+\tRZ(0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tRZ(-0.125) q1
+\tRZ(0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tRZ(-0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tRZ(-0.125) q2
+\tCNOT q0 q1
+\tCNOT q1 q2
+\tH q2
+\tCSWAP q0 q1 q2
+\tI q0
+\tI q0
+\tI q1
+\tI q2
+\tISWAP q2 q0
+\tRZ(-0.111) q1
+\tRX(0.25) q1
+\tRZ(0.111) q1
+\tRZ(-0.333) q1
+\tRX(0.5) q1
+\tRZ(0.333) q1
+\tRZ(-0.777) q1
+\tRX(-0.5) q1
+\tRZ(0.777) q1
+\tMEASURE q0 xX[0]
+\tMEASURE q2 x_a[0]
+\tMEASURE q3 X[0]
+\tMEASURE q2 x_a[0]
+\tMEASURE q1 multi[0]
+\tX q2 # Inverting for following measurement
+\tMEASURE q2 multi[1]
+\tMEASURE q3 multi[2]
+QUIL_CIRCUIT 0 1 2 3 4 m0 m1 m2 m3
+""")
 
 def _all_operations(q0, q1, q2, q3, q4, include_measurements=True):
-
-    class DummyOperation(cirq.Operation):
-        qubits = (q0,)
-        with_qubits = NotImplemented
-
-        def _quil_(self, args: cirq.QuilArgs) -> str:
-            return '// Dummy operation\n'
-
-        def _decompose_(self):
-            # Only used by test_output_unitary_same_as_qiskit
-            return ()  # coverage: ignore
-
-    class DummyCompositeOperation(cirq.Operation):
-        qubits = (q0,)
-        with_qubits = NotImplemented
-
-        def _decompose_(self):
-            return cirq.X(self.qubits[0])
-
-        def __repr__(self):
-            return 'DummyCompositeOperation()'
-
     return (
         cirq.Z(q0),
         cirq.Z(q0)**.625,
@@ -161,11 +237,7 @@ def _all_operations(q0, q1, q2, q3, q4, include_measurements=True):
         cirq.PhasedXPowGate(phase_exponent=0.111, exponent=0.25).on(q1),
         cirq.PhasedXPowGate(phase_exponent=0.333, exponent=0.5).on(q1),
         cirq.PhasedXPowGate(phase_exponent=0.777, exponent=-0.5).on(q1),
-        (cirq.measure(q0, key='xX'), cirq.measure(q2, key='x_a'),
-         cirq.measure(q1, key='x?'), cirq.measure(q3, key='X'),
-         cirq.measure(q4, key='_x'), cirq.measure(q2, key='x_a'),
-         cirq.measure(q1, q2, q3, key='multi', invert_mask=(False, True)))
-        if include_measurements else (),
-        # DummyOperation(),
-        # DummyCompositeOperation(),
+        cirq.measure(q0, key='xX'), cirq.measure(q2, key='x_a'),
+        cirq.measure(q3, key='X'), cirq.measure(q2, key='x_a'),
+        cirq.measure(q1, q2, q3, key='multi', invert_mask=(False, True))
     )
