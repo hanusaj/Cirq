@@ -111,17 +111,19 @@ class QuilOutput:
 
     def _write_quil(self, output_func: Callable[[str], None]) -> None:
         output_func('# Created using Cirq.\n\n')
+        def_circuit = ' '.join([str(q) for q in self.qubits])
         meas_string = []
-        for m in self.measurements:
-            key = protocols.measurement_key(m)
-            if key in meas_string:
-                continue
-            meas_string.append(key)
-            output_func('DECLARE {} BIT[{}]\n'.format(self.measurement_id_map[key],
-                        len(m.qubits)))
-        output_func('\n')
-        qubits_string = ' '.join([str(q) for q in self.qubits])
-        output_func('DEFCIRCUIT QUIL_CIRCUIT {0} {1}:\n\t'.format(qubits_string, ' '.join(meas_string)))
+        if len(self.measurements) > 0:
+            for m in self.measurements:
+                key = protocols.measurement_key(m)
+                if key in meas_string:
+                    continue
+                meas_string.append(key)
+                def_circuit += ' {0}'.format(key)
+                output_func('DECLARE {} BIT[{}]\n'.format(self.measurement_id_map[key],
+                            len(m.qubits)))
+            output_func('\n')
+        output_func('DEFCIRCUIT QUIL_CIRCUIT {0}:\n\t'.format(def_circuit))
 
         def keep(op: 'cirq.Operation') -> bool:
             return protocols.quil(op) is not None
@@ -154,9 +156,10 @@ class QuilOutput:
                 lines.append(str(protocols.quil(decomposed_op)).replace('\n', '\n\t'))
         
         output_func(''.join(lines)[:-1])
-        qubit_to_number = ' '.join([str(i) for i in range(len(self.qubits))])
-        measurement_to_number = ' '.join([self.measurement_id_map[m] for m in self.measurement_id_map])
-        output_func('QUIL_CIRCUIT {0} {1}\n'.format(qubit_to_number, measurement_to_number))
+        circuit_call = ' '.join([str(i) for i in range(len(self.qubits))])
+        for m in self.measurement_id_map:
+            circuit_call += ' {0}'.format(self.measurement_id_map[m])
+        output_func('QUIL_CIRCUIT {0}\n'.format(circuit_call))
             
 
     def rename_defgates(output: str):

@@ -30,34 +30,41 @@ def test_single_gate_no_parameter():
     assert (str(output) ==
             """# Created using Cirq.
 
-DEFCIRCUIT QUIL_CIRCUIT q0 :
+DEFCIRCUIT QUIL_CIRCUIT q0:
 \tX q0
-QUIL_CIRCUIT 0""")
+QUIL_CIRCUIT 0\n""")
 
 def test_single_gate_with_parameter():
     q0, = _make_qubits(1)
     output = cirq.QuilOutput((cirq.X(q0) ** 0.5,), (q0,))
     assert (str(output) ==
-            """RX(0.5) q0\n""")
+"""# Created using Cirq.
+
+DEFCIRCUIT QUIL_CIRCUIT q0:
+\tRX(0.5) q0
+QUIL_CIRCUIT 0\n""")
 
 def test_single_gate_named_qubit():
     q = cirq.NamedQubit('qTest')
     output = cirq.QuilOutput((cirq.X(q),), (q,))
     assert (str(output) ==
-            """X qTest\n""")
+"""# Created using Cirq.
+
+DEFCIRCUIT QUIL_CIRCUIT qTest:
+\tX qTest
+QUIL_CIRCUIT 0\n""")
 
 def test_h_gate_with_parameter():
     q0, = _make_qubits(1)
     output = cirq.QuilOutput((cirq.H(q0) ** 0.25,), (q0,))
     assert (str(output) ==
-            """# Created using Cirq.
+"""# Created using Cirq.
 
-
-DEFCIRCUIT QUIL_CIRCUIT q0 :
+DEFCIRCUIT QUIL_CIRCUIT q0:
 \tRY(0.25) q0
 \tRX(0.25) q0
 \tRY(-0.25) q0
-QUIL_CIRCUIT 0 \n""")
+QUIL_CIRCUIT 0\n""")
 
 def test_save_to_file(tmpdir):
     file_path = os.path.join(tmpdir, 'test.quil')
@@ -69,10 +76,9 @@ def test_save_to_file(tmpdir):
     assert (file_content ==
             """# Created using Cirq.
 
-
-DEFCIRCUIT QUIL_CIRCUIT q0 :
+DEFCIRCUIT QUIL_CIRCUIT q0:
 \tX q0
-QUIL_CIRCUIT 0 \n""")
+QUIL_CIRCUIT 0\n""")
 
 # def test_quil_one_qubit_gate_repr():
 #     gate = QuilOneQubitGate(np.array([[1,0],[0,1]]))

@@ -704,7 +704,7 @@ class HPowGate(eigen_gate.EigenGate, gate_features.SingleQubitGate):
         if self._exponent == 1:
             return 'H {0}\n'.format(qubits[0])
 
-        return 'RY({0}) {3}\nRX({1}) {3}\nRY({2}) {3}'.format(0.25, self._exponent, -0.25, qubits[0])
+        return 'RY({0}) {3}\nRX({1}) {3}\nRY({2}) {3}\n'.format(0.25, self._exponent, -0.25, qubits[0])
 
     def __str__(self):
         if self._exponent == 1:
