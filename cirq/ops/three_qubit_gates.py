@@ -139,13 +139,14 @@ class CCZPowGate(eigen_gate.EigenGate,
             args.format('h {0};\n', qubits[2])]
         return ''.join(lines)
 
-    def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.Qid', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent != 1:
             return None
         lines = [
-            'H {0}\n'.format(qubits[2]),
-            'CCNOT {0} {1} {2}\n'.format(qubits[0], qubits[1], qubits[2]),
-            'H {0}\n'.format(qubits[2])
+            formatter.format('H {0}\n', qubits[2]),
+            formatter.format('CCNOT {0} {1} {2}\n', qubits[0], qubits[1], qubits[2]),
+            formatter.format('H {0}\n', qubits[2])
         ]
         return ''.join(lines)
 
@@ -391,10 +392,11 @@ class CCXPowGate(eigen_gate.EigenGate,
         return args.format('ccx {0},{1},{2};\n',
                            qubits[0], qubits[1], qubits[2])
 
-    def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.Qid', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent != 1:
             return None
-        return 'CCNOT {0} {1} {2}\n'.format(qubits[0], qubits[1], qubits[2])
+        return formatter.format('CCNOT {0} {1} {2}\n', qubits[0], qubits[1], qubits[2])
 
     def __repr__(self) -> str:
         if self._global_shift == 0:
@@ -545,8 +547,9 @@ class CSwapGate(gate_features.ThreeQubitGate,
         return args.format('cswap {0},{1},{2};\n',
                            qubits[0], qubits[1], qubits[2])
 
-    def _quil_(self, qubits: Tuple['cirq.QID', ...]) -> Optional[str]:
-        return 'CSWAP {0} {1} {2}\n'.format(qubits[0], qubits[1], qubits[2])
+    def _quil_(self, qubits: Tuple['cirq.QID', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
+        return formatter.format('CSWAP {0} {1} {2}\n', qubits[0], qubits[1], qubits[2])
 
     def _value_equality_values_(self):
         return ()

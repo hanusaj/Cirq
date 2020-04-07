@@ -181,11 +181,11 @@ class XPowGate(eigen_gate.EigenGate,
         return args.format('rx({0:half_turns}) {1};\n', self._exponent,
                            qubits[0])
 
-    def _quil_(self, qubits: Tuple['cirq.QID', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.QID', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent == 1:
-            return 'X {0}\n'.format(qubits[0])
-
-        return 'RX({0}) {1}\n'.format(self._exponent, qubits[0])
+            return formatter.format('X {0}\n', qubits[0])
+        return formatter.format('RX({0}) {1}\n', self._exponent, qubits[0])
 
     @property
     def phase_exponent(self):
@@ -331,11 +331,11 @@ class YPowGate(eigen_gate.EigenGate,
         return args.format('ry({0:half_turns}) {1};\n', self._exponent,
                            qubits[0])
 
-    def _quil_(self, qubits: Tuple['cirq.QID', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.QID', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent == 1:
-            return 'Y {0}\n'.format(qubits[0])
-
-        return 'RY({0}) {1}\n'.format(self._exponent, qubits[0])
+            return formatter.format('Y {0}\n', qubits[0])
+        return formatter.format('RY({0}) {1}\n', self._exponent, qubits[0])
 
     @property
     def phase_exponent(self):
@@ -533,11 +533,12 @@ class ZPowGate(eigen_gate.EigenGate,
         return args.format('rz({0:half_turns}) {1};\n', self._exponent,
                            qubits[0])
 
-    def _quil_(self, qubits: Tuple['cirq.QID', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.QID', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent == 1:
-            return 'Z {0}\n'.format(qubits[0])
+            return formatter.format('Z {0}\n', qubits[0])
 
-        return 'RZ({0}) {1}\n'.format(self._exponent, qubits[0])
+        return formatter.format('RZ({0}) {1}\n', self._exponent, qubits[0])
 
     def __str__(self) -> str:
         if self._global_shift == -0.5:
@@ -700,11 +701,11 @@ class HPowGate(eigen_gate.EigenGate, gate_features.SingleQubitGate):
             'rx({1:half_turns}) {3};\n'
             'ry({2:half_turns}) {3};\n', 0.25, self._exponent, -0.25, qubits[0])
 
-    def _quil_(self, qubits: Tuple['cirq.QID', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.QID', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent == 1:
-            return 'H {0}\n'.format(qubits[0])
-
-        return 'RY({0}) {3}\nRX({1}) {3}\nRY({2}) {3}\n'.format(0.25, self._exponent, -0.25, qubits[0])
+            return formatter.format('H {0}\n', qubits[0])
+        return formatter.format('RY({0}) {3}\nRX({1}) {3}\nRY({2}) {3}\n', 0.25, self._exponent, -0.25, qubits[0])
 
     def __str__(self):
         if self._exponent == 1:
@@ -843,10 +844,11 @@ class CZPowGate(eigen_gate.EigenGate,
         args.validate_version('2.0')
         return args.format('cz {0},{1};\n', qubits[0], qubits[1])
 
-    def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.Qid', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent == 1:
-            return 'CZ {0} {1}\n'.format(qubits[0], qubits[1])
-        return 'CPHASE({0}) {1} {2}\n'.format(self._exponent, qubits[0], qubits[1])
+            return formatter.format('CZ {0} {1}\n', qubits[0], qubits[1])
+        return formatter.format('CPHASE({0}) {1} {2}\n', self._exponent, qubits[0], qubits[1])
 
     def __str__(self) -> str:
         if self._exponent == 1:
@@ -1013,9 +1015,10 @@ class CXPowGate(eigen_gate.EigenGate, gate_features.TwoQubitGate):
         args.validate_version('2.0')
         return args.format('cx {0},{1};\n', qubits[0], qubits[1])
 
-    def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.Qid', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if self._exponent == 1:
-            return 'CNOT {0} {1}\n'.format(qubits[0], qubits[1])
+            return formatter.format('CNOT {0} {1}\n', qubits[0], qubits[1])
         return None
 
     def __str__(self) -> str:

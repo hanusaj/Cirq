@@ -28,11 +28,9 @@ def test_single_gate_no_parameter():
     q0, = _make_qubits(1)
     output = cirq.QuilOutput((cirq.X(q0),), (q0,))
     assert (str(output) ==
-            """# Created using Cirq.
+"""# Created using Cirq.
 
-DEFCIRCUIT QUIL_CIRCUIT q0:
-\tX q0
-QUIL_CIRCUIT 0\n""")
+X 0\n""")
 
 def test_single_gate_with_parameter():
     q0, = _make_qubits(1)
@@ -40,9 +38,7 @@ def test_single_gate_with_parameter():
     assert (str(output) ==
 """# Created using Cirq.
 
-DEFCIRCUIT QUIL_CIRCUIT q0:
-\tRX(0.5) q0
-QUIL_CIRCUIT 0\n""")
+RX(0.5) 0\n""")
 
 def test_single_gate_named_qubit():
     q = cirq.NamedQubit('qTest')
@@ -50,9 +46,7 @@ def test_single_gate_named_qubit():
     assert (str(output) ==
 """# Created using Cirq.
 
-DEFCIRCUIT QUIL_CIRCUIT qTest:
-\tX qTest
-QUIL_CIRCUIT 0\n""")
+X 0\n""")
 
 def test_h_gate_with_parameter():
     q0, = _make_qubits(1)
@@ -60,11 +54,9 @@ def test_h_gate_with_parameter():
     assert (str(output) ==
 """# Created using Cirq.
 
-DEFCIRCUIT QUIL_CIRCUIT q0:
-\tRY(0.25) q0
-\tRX(0.25) q0
-\tRY(-0.25) q0
-QUIL_CIRCUIT 0\n""")
+RY(0.25) 0
+RX(0.25) 0
+RY(-0.25) 0\n""")
 
 def test_save_to_file(tmpdir):
     file_path = os.path.join(tmpdir, 'test.quil')
@@ -74,11 +66,9 @@ def test_save_to_file(tmpdir):
     with open(file_path, 'r') as f:
         file_content = f.read()
     assert (file_content ==
-            """# Created using Cirq.
+"""# Created using Cirq.
 
-DEFCIRCUIT QUIL_CIRCUIT q0:
-\tX q0
-QUIL_CIRCUIT 0\n""")
+X 0\n""")
 
 # def test_quil_one_qubit_gate_repr():
 #     gate = QuilOneQubitGate(np.array([[1,0],[0,1]]))
@@ -132,89 +122,88 @@ def test_all_operations():
     operations = _all_operations(*qubits, include_measurements=False)
     output = cirq.QuilOutput(operations, qubits)
     print(str(output))
-    assert(str(output) == """# Created using Cirq.
+    assert(str(output) ==
+"""# Created using Cirq.
 
 DECLARE m0 BIT[1]
 DECLARE m1 BIT[1]
 DECLARE m2 BIT[1]
 DECLARE m3 BIT[3]
 
-DEFCIRCUIT QUIL_CIRCUIT q0 q1 q2 q3 q4 xX x_a X multi:
-\tZ q0
-\tRZ(0.625) q0
-\tY q0
-\tRY(0.375) q0
-\tX q0
-\tRX(0.875) q0
-\tH q1
-\tCZ q0 q1
-\tCPHASE(0.25) q0 q1
-\tCNOT q0 q1
-\tRY(-0.5) q1
-\tCPHASE(0.5) q0 q1
-\tRY(0.5) q1
-\tSWAP q0 q1
-\tPSWAP(0.75) q0 q1
-\tH q2
-\tCCNOT q0 q1 q2
-\tH q2
-\tCCNOT q0 q1 q2
-\tRZ(0.125) q0
-\tRZ(0.125) q1
-\tRZ(0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tRZ(-0.125) q1
-\tRZ(0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tRZ(-0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tRZ(-0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tH q2
-\tRZ(0.125) q0
-\tRZ(0.125) q1
-\tRZ(0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tRZ(-0.125) q1
-\tRZ(0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tRZ(-0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tRZ(-0.125) q2
-\tCNOT q0 q1
-\tCNOT q1 q2
-\tH q2
-\tCSWAP q0 q1 q2
-\tI q0
-\tI q0
-\tI q1
-\tI q2
-\tISWAP q2 q0
-\tRZ(-0.111) q1
-\tRX(0.25) q1
-\tRZ(0.111) q1
-\tRZ(-0.333) q1
-\tRX(0.5) q1
-\tRZ(0.333) q1
-\tRZ(-0.777) q1
-\tRX(-0.5) q1
-\tRZ(0.777) q1
-\tMEASURE q0 xX[0]
-\tMEASURE q2 x_a[0]
-\tMEASURE q3 X[0]
-\tMEASURE q2 x_a[0]
-\tMEASURE q1 multi[0]
-\tX q2 # Inverting for following measurement
-\tMEASURE q2 multi[1]
-\tMEASURE q3 multi[2]
-QUIL_CIRCUIT 0 1 2 3 4 m0 m1 m2 m3
+Z 0
+RZ(0.625) 0
+Y 0
+RY(0.375) 0
+X 0
+RX(0.875) 0
+H 1
+CZ 0 1
+CPHASE(0.25) 0 1
+CNOT 0 1
+RY(-0.5) 1
+CPHASE(0.5) 0 1
+RY(0.5) 1
+SWAP 0 1
+PSWAP(0.75) 0 1
+H 2
+CCNOT 0 1 2
+H 2
+CCNOT 0 1 2
+RZ(0.125) 0
+RZ(0.125) 1
+RZ(0.125) 2
+CNOT 0 1
+CNOT 1 2
+RZ(-0.125) 1
+RZ(0.125) 2
+CNOT 0 1
+CNOT 1 2
+RZ(-0.125) 2
+CNOT 0 1
+CNOT 1 2
+RZ(-0.125) 2
+CNOT 0 1
+CNOT 1 2
+H 2
+RZ(0.125) 0
+RZ(0.125) 1
+RZ(0.125) 2
+CNOT 0 1
+CNOT 1 2
+RZ(-0.125) 1
+RZ(0.125) 2
+CNOT 0 1
+CNOT 1 2
+RZ(-0.125) 2
+CNOT 0 1
+CNOT 1 2
+RZ(-0.125) 2
+CNOT 0 1
+CNOT 1 2
+H 2
+CSWAP 0 1 2
+I 0
+I 0
+I 1
+I 2
+ISWAP 2 0
+RZ(-0.111) 1
+RX(0.25) 1
+RZ(0.111) 1
+RZ(-0.333) 1
+RX(0.5) 1
+RZ(0.333) 1
+RZ(-0.777) 1
+RX(-0.5) 1
+RZ(0.777) 1
+MEASURE 0 m0[0]
+MEASURE 2 m1[0]
+MEASURE 3 m2[0]
+MEASURE 2 m1[0]
+MEASURE 1 m3[0]
+X 2 # Inverting for following measurement
+MEASURE 2 m3[1]
+MEASURE 3 m3[2]
 """)
 
 def _all_operations(q0, q1, q2, q3, q4, include_measurements=True):

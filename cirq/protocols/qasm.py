@@ -153,7 +153,6 @@ def qasm(val: Any,
         `NotImplemented` or `None`) and `default` wasn't set.
     """
     method = getattr(val, '_qasm_', None)
-    print (method)
     result = NotImplemented
     if method is not None:
         kwargs = {}  # type: Dict[str, Any]

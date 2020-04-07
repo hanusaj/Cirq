@@ -80,13 +80,14 @@ class TwoQubitDiagonalGate(gate_features.TwoQubitGate):
         return 'cirq.TwoQubitDiagonalGate([{}])'.format(','.join(
             proper_repr(angle) for angle in self._diag_angles_radians))
 
-    def _quil_(self, qubits: Tuple['cirq.Qid', ...]) -> Optional[str]:
+    def _quil_(self, qubits: Tuple['cirq.Qid', ...],
+               formatter: 'cirq.QuilFormatter') -> Optional[str]:
         if qubits[0] == 0 and qubits[1] == 0:
-            return 'CPHASE00 {0} {1} {2}\n'.format(self._exponent, qubits[0], qubits[1])
+            return formatter.format('CPHASE00 {0} {1} {2}\n', self._exponent, qubits[0], qubits[1])
         if qubits[0] == 1 and qubits[1] == 0:
-            return 'CPHASE01 {0} {1} {2}\n'.format(self._exponent, qubits[0], qubits[1])
+            return formatter.format('CPHASE01 {0} {1} {2}\n', self._exponent, qubits[0], qubits[1])
         if qubits[0] == 0 and qubits[1] == 1:
-            return 'CPHASE10 {0} {1} {2}\n'.format(self._exponent, qubits[0], qubits[1])   
+            return formatter.format('CPHASE10 {0} {1} {2}\n', self._exponent, qubits[0], qubits[1])   
         return None 
 
     def _apply_unitary_(self, args: 'protocols.ApplyUnitaryArgs') -> np.ndarray:
